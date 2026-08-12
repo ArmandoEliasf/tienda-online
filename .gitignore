@@ -7,3 +7,7 @@ node_modules/
 # Environment variables (contain credentials - NEVER commit)
 backend/.env
 *.env.local
+
+# Logs
+backend/server.out.log
+backend/server.err.log
