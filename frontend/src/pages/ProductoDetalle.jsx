@@ -109,7 +109,17 @@ function ProductoDetalle() {
                 className="form-control"
                 style={{ maxWidth: '90px' }}
                 value={cantidad}
-                onChange={(e) => setCantidad(Math.max(1, Number(e.target.value)))}
+                disabled={agotado}
+                onChange={(e) => {
+                  const raw = e.target.value
+                  if (raw === '') {
+                    setCantidad(1)
+                    return
+                  }
+                  const valor = Math.floor(Number(raw))
+                  if (Number.isNaN(valor)) return
+                  setCantidad(Math.min(Math.max(1, valor), producto.existencia))
+                }}
               />
             </div>
 

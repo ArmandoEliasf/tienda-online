@@ -69,11 +69,15 @@ function Carrito() {
                           <span className="input-group-text">{item.cantidad}</span>
                           <button
                             className="btn btn-outline-secondary"
+                            disabled={item.cantidad >= (item.existencia ?? Infinity)}
                             onClick={() => updateQuantity(item.id, item.cantidad + 1)}
                           >
                             +
                           </button>
                         </div>
+                        {item.cantidad >= (item.existencia ?? Infinity) && (
+                          <div className="small text-warning mt-1">Límite de stock</div>
+                        )}
                       </td>
                       <td className="text-end">{formatPrice(item.precio)}</td>
                       <td className="text-end fw-semibold">

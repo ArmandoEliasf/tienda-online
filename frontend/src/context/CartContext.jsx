@@ -18,22 +18,38 @@ export function CartProvider({ children }) {
 
   const addItem = (producto, cantidad = 1) => {
     setItems((prev) => {
+      const limite = producto.existencia
+      const cantidadCap = Math.min(cantidad, limite)
       const existente = prev.find((i) => i.id === producto.id)
       if (existente) {
         return prev.map((i) =>
-          i.id === producto.id ? { ...i, cantidad: i.cantidad + cantidad } : i,
+          i.id === producto.id
+            ? { ...i, cantidad: Math.min(i.cantidad + cantidadCap, limite), existencia: limite }
+            : i,
         )
       }
       return [
         ...prev,
-        { id: producto.id, nombre: producto.nombre, precio: producto.precio, imagen_url: producto.imagen_url, cantidad },
+        {
+          id: producto.id,
+          nombre: producto.nombre,
+          precio: producto.precio,
+          imagen_url: producto.imagen_url,
+          existencia: limite,
+          cantidad: cantidadCap,
+        },
       ]
     })
   }
 
   const updateQuantity = (id, cantidad) => {
-    if (cantidad < 1) return
-    setItems((prev) => prev.map((i) => (i.id === id ? { ...i, cantidad } : i)))
+    setItems((prev) =>
+      prev.map((i) => {
+        if (i.id !== id) return i
+        const max = i.existencia ?? Number.POSITIVE_INFINITY
+        return { ...i, cantidad: Math.min(Math.max(cantidad, 1), max) }
+      }),
+    )
   }
 
   const removeItem = (id) => {
