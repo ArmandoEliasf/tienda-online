@@ -1,0 +1,5 @@
+# Local tool cache
+.atl/
+
+# Dependencies
+node_modules/
