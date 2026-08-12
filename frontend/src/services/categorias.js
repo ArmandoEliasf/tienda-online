@@ -1,8 +1,6 @@
-import { categoriasMock } from '../data/productosMock.js'
-
-const delay = (ms = 200) => new Promise((resolve) => setTimeout(resolve, ms))
+import { api } from './api.js'
 
 export async function listCategorias() {
-  await delay()
-  return categoriasMock
+  const { categorias } = await api.get('/categorias')
+  return categorias
 }

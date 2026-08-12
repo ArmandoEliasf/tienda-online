@@ -1,45 +1,24 @@
-import { productosMock } from '../data/productosMock.js'
-
-const delay = (ms = 300) => new Promise((resolve) => setTimeout(resolve, ms))
-
-const activos = () => productosMock.filter((p) => p.estado === 'activo')
+import { api } from './api.js'
 
 export async function listProductos({ q, categoria, precioMin, precioMax, disponible } = {}) {
-  await delay()
-  let result = activos()
+  const params = new URLSearchParams()
+  if (q) params.set('q', q)
+  if (categoria) params.set('categoria', categoria)
+  if (precioMin) params.set('precioMin', precioMin)
+  if (precioMax) params.set('precioMax', precioMax)
+  if (disponible) params.set('disponible', 'true')
 
-  if (q) {
-    const term = q.toLowerCase()
-    result = result.filter(
-      (p) => p.nombre.toLowerCase().includes(term) || p.descripcion.toLowerCase().includes(term),
-    )
-  }
-  if (categoria) {
-    result = result.filter((p) => p.id_categoria === Number(categoria))
-  }
-  if (precioMin) {
-    result = result.filter((p) => p.precio >= Number(precioMin))
-  }
-  if (precioMax) {
-    result = result.filter((p) => p.precio <= Number(precioMax))
-  }
-  if (disponible) {
-    result = result.filter((p) => p.existencia > 0)
-  }
-
-  return result
+  const query = params.toString()
+  const { productos } = await api.get(`/productos${query ? `?${query}` : ''}`)
+  return productos
 }
 
 export async function getProducto(id) {
-  await delay()
-  const producto = productosMock.find((p) => p.id === Number(id))
-  if (!producto) {
-    throw new Error('Producto no encontrado')
-  }
-  return { ...producto }
+  const { producto } = await api.get(`/productos/${id}`)
+  return producto
 }
 
-export async function getDestacados() {
-  await delay()
-  return [...activos()].sort(() => Math.random() - 0.5).slice(0, 8)
+export async function getDestacados(limit = 8) {
+  const { productos } = await api.get(`/productos/destacados?limit=${limit}`)
+  return productos
 }
