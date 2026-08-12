@@ -15,7 +15,7 @@ export function requireAuth(req, res, next) {
   }
 }
 
-export async function requireRole(...roles) {
+export function requireRole(...roles) {
   return (req, res, next) => {
     if (!req.user) {
       return next(new ApiError(401, 'Se requiere token de acceso'));

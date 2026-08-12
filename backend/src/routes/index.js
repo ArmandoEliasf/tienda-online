@@ -1,5 +1,12 @@
 import { Router } from 'express';
 import { query } from '../config/db.js';
+import authRoutes from './authRoutes.js';
+import productoRoutes from './productoRoutes.js';
+import categoriaRoutes from './categoriaRoutes.js';
+import carritoRoutes from './carritoRoutes.js';
+import direccionRoutes from './direccionRoutes.js';
+import pedidoRoutes from './pedidoRoutes.js';
+import usuarioRoutes from './usuarioRoutes.js';
 
 const router = Router();
 
@@ -12,10 +19,12 @@ router.get('/health', async (req, res, next) => {
   }
 });
 
-router.use('/auth', (req, res) => res.json({ message: 'Módulo de autenticación (Fase 5)' }));
-router.use('/productos', (req, res) => res.json({ message: 'Módulo de productos (Fase 5)' }));
-router.use('/categorias', (req, res) => res.json({ message: 'Módulo de categorías (Fase 5)' }));
-router.use('/carrito', (req, res) => res.json({ message: 'Módulo de carrito (Fase 5)' }));
-router.use('/pedidos', (req, res) => res.json({ message: 'Módulo de pedidos (Fase 5)' }));
+router.use('/auth', authRoutes);
+router.use('/productos', productoRoutes);
+router.use('/categorias', categoriaRoutes);
+router.use('/carrito', carritoRoutes);
+router.use('/direcciones', direccionRoutes);
+router.use('/pedidos', pedidoRoutes);
+router.use('/usuarios', usuarioRoutes);
 
 export default router;
