@@ -55,6 +55,18 @@ function Navbar() {
             {sesion ? (
               <>
                 <li className="nav-item">
+                  <Link className="nav-link" to="/pedidos">
+                    Mis pedidos
+                  </Link>
+                </li>
+                {sesion.rol === 'administrador' && (
+                  <li className="nav-item">
+                    <Link className="nav-link" to="/admin">
+                      Admin
+                    </Link>
+                  </li>
+                )}
+                <li className="nav-item">
                   <span className="nav-link">
                     Hola, {sesion.nombre.split(' ')[0]}
                     {sesion.rol === 'administrador' && (

@@ -1,10 +1,13 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useCart } from '../context/CartContext.jsx'
+import { useAuth } from '../context/AuthContext.jsx'
 import { formatPrice } from '../utils/format.js'
 import { ProductImage } from '../components/ui/ProductImage.jsx'
 
 function Carrito() {
   const { items, updateQuantity, removeItem, clearCart, subtotal, itemCount } = useCart()
+  const { sesion } = useAuth()
+  const navigate = useNavigate()
 
   if (items.length === 0) {
     return (
@@ -122,6 +125,12 @@ function Carrito() {
                   Envío gratis en compras mayores a $1,000 MXN. El pago se confirmará al generar el
                   pedido (simulado).
                 </p>
+                <button
+                  className="btn btn-primary w-100 mt-3"
+                  onClick={() => navigate(sesion ? '/checkout' : '/login')}
+                >
+                  {sesion ? 'Ir a pagar' : 'Inicia sesión para pagar'}
+                </button>
               </div>
             </div>
           </div>
