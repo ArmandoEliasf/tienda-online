@@ -9,6 +9,9 @@ SET client_encoding = 'UTF8';
 -- Búsqueda con coincidencia parcial (LIKE acelerado con índices GIN)
 CREATE EXTENSION IF NOT EXISTS pg_trgm;
 
+-- Secuencia para generar números de pedido legibles (TLJ-YYYY-######)
+CREATE SEQUENCE IF NOT EXISTS seq_numero_pedido;
+
 -- =============================================================
 -- CATÁLOGO DE ROLES
 -- =============================================================

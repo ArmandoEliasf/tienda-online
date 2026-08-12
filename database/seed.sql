@@ -113,6 +113,9 @@ INSERT INTO pedidos (id, numero_pedido, id_usuario, id_direccion, subtotal, tota
     (2, 'TLJ-2026-000002', 4, 2, 14999.00, 14999.00, 'pendiente', CURRENT_TIMESTAMP - INTERVAL '1 day'),
     (3, 'TLJ-2026-000003', 5, 3, 5397.00, 5397.00, 'enviado',    CURRENT_TIMESTAMP - INTERVAL '3 days');
 
+-- Ajusta la secuencia de números de pedido para no chocar con los pedidos seed
+SELECT setval('seq_numero_pedido', (SELECT COUNT(*) FROM pedidos), true);
+
 INSERT INTO detalle_pedido (id, id_pedido, id_producto, cantidad, precio_unitario) VALUES
     (1, 1, 2, 2, 449.00),
     (2, 1, 8, 1, 999.00),
