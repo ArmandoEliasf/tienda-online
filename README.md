@@ -71,9 +71,9 @@ Imágenes: Google Drive ──► URL/referencia guardada en PostgreSQL
 
 ```
 tienda-online/
-├── backend/            # API Express
-├── frontend/           # Aplicación React (Vite)
-├── database/           # Scripts SQL (schema.sql, seed.sql)
+├── backend/            # API Express (src/config, src/middleware, src/routes)
+├── frontend/           # Aplicación React (Vite) + Bootstrap
+├── database/           # Scripts SQL (schema.sql, seed.sql — Fase 3)
 ├── docs/               # Documentación (análisis, diseño de BD, etc.)
 └── README.md
 ```
@@ -90,7 +90,50 @@ tienda-online/
 
 ## Instalación y ejecución
 
-Documentación completa en la Fase 2 (configuración del entorno).
+### Requisitos
+- Node.js >= 20 y npm.
+- PostgreSQL >= 16 (servicio local en el puerto 5432).
+
+### 1. Configurar variables de entorno
+```bash
+cd backend
+cp .env.example .env
+# editar .env con las credenciales de tu PostgreSQL
+```
+
+### 2. Instalar dependencias
+```bash
+cd backend && npm install
+cd ../frontend && npm install
+```
+
+### 3. Crear la base de datos
+```bash
+# con psql (o pgAdmin):
+CREATE DATABASE tiendita_joyas ENCODING 'UTF8';
+# los scripts de tablas y datos se aplican en la Fase 3:
+#   database/schema.sql
+#   database/seed.sql
+```
+
+### 4. Ejecutar en desarrollo
+```bash
+# Terminal 1 — backend (puerto 4000)
+cd backend
+npm run dev
+
+# Terminal 2 — frontend (puerto 5173)
+cd frontend
+npm run dev
+```
+La app se abre en `http://localhost:5173`. El frontend redirige `/api/*` al backend mediante el proxy de Vite.
+
+### Verificación
+```bash
+# estado del backend y conexión a PostgreSQL:
+Invoke-WebRequest http://localhost:4000/api/health
+# → {"status":"ok","database":"connected",...}
+```
 
 ## Documentación del proyecto
 

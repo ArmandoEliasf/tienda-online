@@ -3,3 +3,7 @@
 
 # Dependencies
 node_modules/
+
+# Environment variables (contain credentials - NEVER commit)
+backend/.env
+*.env.local
