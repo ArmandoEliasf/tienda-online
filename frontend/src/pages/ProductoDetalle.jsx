@@ -11,7 +11,7 @@ function ProductoDetalle() {
   const [error, setError] = useState(null)
   const [cantidad, setCantidad] = useState(1)
   const [agregado, setAgregado] = useState(false)
-  const { addItem } = useCart()
+  const { addItem, error: cartError, clearError } = useCart()
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -45,8 +45,11 @@ function ProductoDetalle() {
 
   const agregar = () => {
     addItem(producto, cantidad)
-    setAgregado(true)
-    setTimeout(() => setAgregado(false), 2500)
+      .then(() => {
+        setAgregado(true)
+        setTimeout(() => setAgregado(false), 2500)
+      })
+      .catch(() => {})
   }
 
   return (
@@ -90,6 +93,13 @@ function ProductoDetalle() {
             </div>
 
             <p className="text-muted">{producto.descripcion}</p>
+
+            {cartError && (
+              <div className="alert alert-warning py-2 small d-flex justify-content-between align-items-center">
+                <span>{cartError}</span>
+                <button className="btn-close" onClick={clearError} aria-label="Cerrar"></button>
+              </div>
+            )}
 
             <div className="card mb-4 p-3 bg-light">
               <p className="small mb-0">

@@ -71,6 +71,8 @@ export function CartProvider({ children }) {
 
   const applyCarrito = (carrito) => setItems(formaLineas(carrito.lineas))
 
+  const clearError = () => setError(null)
+
   const addItem = async (producto, cantidad = 1) => {
     if (token) {
       setError(null)
@@ -180,7 +182,7 @@ export function CartProvider({ children }) {
 
   return (
     <CartContext.Provider
-      value={{ items, addItem, updateQuantity, removeItem, clearCart, subtotal, itemCount, cargando, error }}
+      value={{ items, addItem, updateQuantity, removeItem, clearCart, subtotal, itemCount, cargando, error, clearError }}
     >
       {children}
     </CartContext.Provider>

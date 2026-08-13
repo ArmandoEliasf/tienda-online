@@ -8,7 +8,7 @@ export async function createFromCarrito({ numeroPedido, idUsuario, idDireccion, 
 
     const ids = lineas.map((l) => l.idProducto);
     const { rows: bloqueados } = await client.query(
-      `SELECT id, precio, existencia, estado FROM productos WHERE id = ANY($1::int[]) FOR UPDATE`,
+      `SELECT id, precio, existencia, estado, id_vendedor FROM productos WHERE id = ANY($1::int[]) FOR UPDATE`,
       [ids],
     );
     const mapa = new Map(bloqueados.map((p) => [p.id, p]));
@@ -18,6 +18,9 @@ export async function createFromCarrito({ numeroPedido, idUsuario, idDireccion, 
       const producto = mapa.get(linea.idProducto);
       if (!producto || producto.estado !== 'activo') {
         throw new ApiError(400, 'Uno o más productos ya no están disponibles');
+      }
+      if (producto.id_vendedor === idUsuario) {
+        throw new ApiError(400, 'Un pedido no puede incluir productos tuyos');
       }
       if (linea.cantidad > producto.existencia) {
         throw new ApiError(400, `Stock insuficiente: de ${linea.idProducto} quedan ${producto.existencia}`);

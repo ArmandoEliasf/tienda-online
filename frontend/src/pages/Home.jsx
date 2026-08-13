@@ -9,7 +9,7 @@ function Home() {
   const [destacados, setDestacados] = useState([])
   const [categorias, setCategorias] = useState([])
   const [cargando, setCargando] = useState(true)
-  const { addItem } = useCart()
+  const { addItem, error, clearError } = useCart()
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -74,6 +74,12 @@ function Home() {
       <section className="pb-5">
         <div className="container">
           <h2 className="h5 fw-bold mb-3">Productos destacados</h2>
+          {error && (
+            <div className="alert alert-warning py-2 small d-flex justify-content-between align-items-center">
+              <span>{error}</span>
+              <button className="btn-close" onClick={clearError} aria-label="Cerrar"></button>
+            </div>
+          )}
           {cargando ? (
             <p className="text-muted">Cargando productos...</p>
           ) : (

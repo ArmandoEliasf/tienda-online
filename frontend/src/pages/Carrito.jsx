@@ -5,7 +5,7 @@ import { formatPrice } from '../utils/format.js'
 import { ProductImage } from '../components/ui/ProductImage.jsx'
 
 function Carrito() {
-  const { items, updateQuantity, removeItem, clearCart, subtotal, itemCount } = useCart()
+  const { items, updateQuantity, removeItem, clearCart, subtotal, itemCount, error, clearError } = useCart()
   const { sesion } = useAuth()
   const navigate = useNavigate()
 
@@ -29,6 +29,12 @@ function Carrito() {
     <section className="py-4">
       <div className="container">
         <h1 className="h4 mb-4">Carrito de compras</h1>
+        {error && (
+          <div className="alert alert-warning py-2 small d-flex justify-content-between align-items-center">
+            <span>{error}</span>
+            <button className="btn-close" onClick={clearError} aria-label="Cerrar"></button>
+          </div>
+        )}
         <div className="row">
           <div className="col-lg-8">
             <div className="card shadow-sm">

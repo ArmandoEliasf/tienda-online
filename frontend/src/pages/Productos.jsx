@@ -13,7 +13,7 @@ function Productos() {
   const [productos, setProductos] = useState([])
   const [categorias, setCategorias] = useState([])
   const [cargando, setCargando] = useState(true)
-  const { addItem } = useCart()
+  const { addItem, error, clearError } = useCart()
 
   const filtros = useMemo(() => {
     const out = {}
@@ -60,6 +60,12 @@ function Productos() {
             />
           </div>
           <div className="col-lg-9">
+            {error && (
+              <div className="alert alert-warning py-2 small d-flex justify-content-between align-items-center">
+                <span>{error}</span>
+                <button className="btn-close" onClick={clearError} aria-label="Cerrar"></button>
+              </div>
+            )}
             {cargando ? (
               <p className="text-muted">Cargando productos...</p>
             ) : productos.length === 0 ? (

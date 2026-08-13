@@ -13,6 +13,9 @@ export async function getCarrito(idUsuario) {
 export async function addProducto(idUsuario, { idProducto, cantidad }) {
   const producto = await productoRepo.findById(idProducto);
   if (!producto || producto.estado !== 'activo') throw new ApiError(404, 'Producto no encontrado');
+  if (producto.id_vendedor === idUsuario) {
+    throw new ApiError(400, 'No puedes comprar tus propios productos');
+  }
   if (cantidad > producto.existencia) {
     throw new ApiError(400, `Solo hay ${producto.existencia} disponible(s)`);
   }
