@@ -20,6 +20,8 @@ function ProductosAdmin({ token }) {
   const [error, setError] = useState(null)
   const [form, setForm] = useState(null)
   const [editandoId, setEditandoId] = useState(null)
+  const [subiendoImagen, setSubiendoImagen] = useState(false)
+  const [imagenError, setImagenError] = useState(null)
 
   const cargar = () => {
     setCargando(true)
@@ -39,6 +41,7 @@ function ProductosAdmin({ token }) {
   const abrirNuevo = () => {
     setForm({ ...VACIO, idCategoria: categorias[0]?.id || '' })
     setEditandoId(null)
+    setImagenError(null)
   }
 
   const abrirEdicion = (p) => {
@@ -53,6 +56,28 @@ function ProductosAdmin({ token }) {
       imagen_nombre_archivo: '',
     })
     setEditandoId(p.id)
+    setImagenError(null)
+  }
+
+  const subir = async (e) => {
+    const archivo = e.target.files?.[0]
+    if (!archivo) return
+    setSubiendoImagen(true)
+    setImagenError(null)
+    try {
+      const subido = await adminService.subirImagen(archivo, token)
+      setForm((f) => ({
+        ...f,
+        imagen_url: subido.url,
+        imagen_google_drive_id: subido.google_drive_id,
+        imagen_nombre_archivo: subido.nombre_archivo,
+      }))
+    } catch (err) {
+      setImagenError(err.message)
+    } finally {
+      setSubiendoImagen(false)
+      e.target.value = ''
+    }
   }
 
   const guardar = async (e) => {
@@ -79,6 +104,7 @@ function ProductosAdmin({ token }) {
         await adminService.crearProducto(datos, token)
       }
       setForm(null)
+      setImagenError(null)
       cargar()
     } catch (err) {
       setError(err.message)
@@ -128,6 +154,32 @@ function ProductosAdmin({ token }) {
             <div className="col-12">
               <hr className="my-1" />
               <div className="small text-muted mb-2">Imagen principal (opcional)</div>
+            </div>
+            <div className="col-md-6">
+              <label className="form-label small">Subir imagen a Google Drive</label>
+              <input
+                type="file"
+                accept="image/*"
+                className="form-control form-control-sm"
+                onChange={subir}
+                disabled={subiendoImagen}
+              />
+              {subiendoImagen && <div className="form-text small">Subiendo a Google Drive...</div>}
+              {imagenError && <div className="text-danger small">{imagenError}</div>}
+            </div>
+            <div className="col-md-6">
+              {form.imagen_url ? (
+                <img
+                  src={form.imagen_url}
+                  alt="Vista previa"
+                  className="img-thumbnail mt-2"
+                  style={{ maxHeight: 96 }}
+                />
+              ) : (
+                <div className="text-muted small mt-2">
+                  Sube una imagen o escribe la URL manualmente.
+                </div>
+              )}
             </div>
             <div className="col-md-6">
               <label className="form-label small">URL de la imagen</label>

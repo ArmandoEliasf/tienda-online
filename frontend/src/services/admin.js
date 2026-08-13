@@ -23,3 +23,19 @@ export const setPedidoEstado = (id, estado, observacion, token) =>
   api.patch(`/pedidos/admin/${id}/estado`, { estado, observacion }, token)
 
 export const listUsuarios = (token) => api.get('/usuarios', token)
+
+export async function subirImagen(archivo, token) {
+  const form = new FormData()
+  form.append('archivo', archivo)
+  const res = await fetch('/api/archivos', {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${token}` },
+    body: form,
+  })
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}))
+    throw new Error(err.message || 'Error al subir la imagen')
+  }
+  const { archivo: subido } = await res.json()
+  return subido
+}
