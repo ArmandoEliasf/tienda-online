@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import * as adminService from '../../services/admin.js'
 import { formatPrice } from '../../utils/format.js'
+import { normalizarUrlImagen } from '../../utils/imagen.js'
 
 const VACIO = {
   nombre: '',
@@ -13,7 +14,7 @@ const VACIO = {
   imagen_nombre_archivo: '',
 }
 
-function ProductosAdmin({ token }) {
+function ProductosAdmin({ token, soloMios = false }) {
   const [productos, setProductos] = useState([])
   const [categorias, setCategorias] = useState([])
   const [cargando, setCargando] = useState(true)
@@ -25,7 +26,8 @@ function ProductosAdmin({ token }) {
 
   const cargar = () => {
     setCargando(true)
-    Promise.all([adminService.listProductosAdmin(token), adminService.listCategoriasAdmin(token)])
+    const lista = soloMios ? adminService.listMisProductos(token) : adminService.listProductosAdmin(token)
+    Promise.all([lista, adminService.listCategoriasAdmin(token)])
       .then(([p, c]) => {
         setProductos(p.productos)
         setCategorias(c.categorias)
@@ -170,7 +172,7 @@ function ProductosAdmin({ token }) {
             <div className="col-md-6">
               {form.imagen_url ? (
                 <img
-                  src={form.imagen_url}
+                  src={normalizarUrlImagen(form.imagen_url)}
                   alt="Vista previa"
                   className="img-thumbnail mt-2"
                   style={{ maxHeight: 96 }}

@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { list, listDestacados, getById, create, update, setEstado, listCategoriasAdmin } from '../controllers/productoController.js';
+import { list, listMios, listDestacados, getById, create, update, setEstado, listCategoriasAdmin } from '../controllers/productoController.js';
 import { requireAuth, requireRole } from '../middleware/auth.js';
 import { validar, reglas } from '../middleware/validate.js';
 
@@ -7,6 +7,7 @@ const router = Router();
 
 router.get('/destacados', listDestacados);
 router.get('/', list);
+router.get('/mios', requireAuth, requireRole('vendedor', 'administrador'), listMios);
 router.get('/:id', getById);
 
 const crearOActualizar = validar({
@@ -25,6 +26,6 @@ router.patch(
   validar({ estado: [reglas.requerido('estado'), reglas.en('estado', ['activo', 'inactivo'])] }),
   setEstado,
 );
-router.get('/admin/categorias', requireAuth, requireRole('administrador'), listCategoriasAdmin);
+router.get('/admin/categorias', requireAuth, requireRole('vendedor', 'administrador'), listCategoriasAdmin);
 
 export default router;

@@ -10,6 +10,15 @@ export async function list(req, res, next) {
   }
 }
 
+export async function listMios(req, res, next) {
+  try {
+    const productos = await productoService.list({ ...req.query, incluirInactivos: true, idVendedor: req.user.id });
+    res.json({ productos });
+  } catch (err) {
+    next(err);
+  }
+}
+
 export async function listDestacados(req, res, next) {
   try {
     const productos = await productoService.listDestacados(Number(req.query.limit) || 8);
@@ -39,7 +48,7 @@ export async function create(req, res, next) {
 
 export async function update(req, res, next) {
   try {
-    const producto = await productoService.update(req.params.id, req.body);
+    const producto = await productoService.update(req.user, req.params.id, req.body, req.body.imagen);
     res.json({ producto });
   } catch (err) {
     next(err);
@@ -48,7 +57,7 @@ export async function update(req, res, next) {
 
 export async function setEstado(req, res, next) {
   try {
-    const producto = await productoService.setEstado(req.params.id, req.body.estado);
+    const producto = await productoService.setEstado(req.user, req.params.id, req.body.estado);
     res.json({ producto });
   } catch (err) {
     next(err);

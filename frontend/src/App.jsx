@@ -11,6 +11,7 @@ import Registro from './pages/Registro.jsx'
 import MisPedidos from './pages/MisPedidos.jsx'
 import PedidoDetalle from './pages/PedidoDetalle.jsx'
 import Admin from './pages/Admin.jsx'
+import MisProductos from './pages/MisProductos.jsx'
 import { AuthProvider } from './context/AuthContext.jsx'
 import { CartProvider } from './context/CartContext.jsx'
 
@@ -30,6 +31,7 @@ function App() {
               <Route path="/pedidos" element={<MisPedidos />} />
               <Route path="/pedidos/:id" element={<PedidoDetalle />} />
               <Route path="/admin" element={<Admin />} />
+              <Route path="/mis-productos" element={<MisProductos />} />
               <Route path="/login" element={<Login />} />
               <Route path="/registro" element={<Registro />} />
             </Routes>

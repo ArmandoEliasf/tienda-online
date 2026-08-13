@@ -20,12 +20,17 @@ const PRODUCTO_SELECT = `
   LEFT JOIN imagenes img ON img.id_producto = p.id AND img.es_principal = TRUE
 `;
 
-export async function search({ q, categoriaId, precioMin, precioMax, disponible, destacados, limit, incluirInactivos }) {
+export async function search({ q, categoriaId, precioMin, precioMax, disponible, destacados, limit, incluirInactivos, idVendedor }) {
   const where = [];
   const params = [];
 
   if (!incluirInactivos) {
     where.push(`p.estado = 'activo'`);
+  }
+
+  if (idVendedor) {
+    params.push(idVendedor);
+    where.push(`p.id_vendedor = $${params.length}`);
   }
 
   if (q) {
@@ -106,6 +111,7 @@ export async function setEstado(id, estado) {
 
 export async function setImagenPrincipal(idProducto, imagen) {
   const { google_drive_id, url, nombre_archivo } = imagen;
+  await query(`UPDATE imagenes SET es_principal = FALSE WHERE id_producto = $1`, [idProducto]);
   const { rows } = await query(
     `INSERT INTO imagenes (id_producto, google_drive_id, url, nombre_archivo, es_principal)
      VALUES ($1, $2, $3, $4, TRUE)

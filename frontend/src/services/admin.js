@@ -3,6 +3,8 @@ import { api } from './api.js'
 export const listProductosAdmin = (token) =>
   api.get('/productos?incluirInactivos=true&limit=500', token)
 
+export const listMisProductos = (token) => api.get('/productos/mios', token)
+
 export const crearProducto = (datos, token) => api.post('/productos', datos, token)
 export const actualizarProducto = (id, datos, token) => api.put(`/productos/${id}`, datos, token)
 export const setProductoEstado = (id, estado, token) =>

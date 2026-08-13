@@ -66,6 +66,13 @@ function Navbar() {
                     </Link>
                   </li>
                 )}
+                {sesion.rol === 'vendedor' && (
+                  <li className="nav-item">
+                    <Link className="nav-link" to="/mis-productos">
+                      Mis productos
+                    </Link>
+                  </li>
+                )}
                 <li className="nav-item">
                   <span className="nav-link">
                     Hola, {sesion.nombre.split(' ')[0]}
