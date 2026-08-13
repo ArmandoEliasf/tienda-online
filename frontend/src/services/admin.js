@@ -24,6 +24,9 @@ export const setPedidoEstado = (id, estado, observacion, token) =>
 
 export const listUsuarios = (token) => api.get('/usuarios', token)
 
+export const setUsuarioEstado = (id, estado, token) =>
+  api.patch(`/usuarios/${id}/estado`, { estado }, token)
+
 export async function subirImagen(archivo, token) {
   const form = new FormData()
   form.append('archivo', archivo)

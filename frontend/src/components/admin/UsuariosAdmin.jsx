@@ -1,18 +1,32 @@
 import { useEffect, useState } from 'react'
 import * as adminService from '../../services/admin.js'
+import { useAuth } from '../../context/AuthContext.jsx'
 
 function UsuariosAdmin({ token }) {
   const [usuarios, setUsuarios] = useState([])
   const [cargando, setCargando] = useState(true)
   const [error, setError] = useState(null)
+  const { sesion } = useAuth()
 
-  useEffect(() => {
+  const cargar = () => {
     adminService
       .listUsuarios(token)
       .then((r) => setUsuarios(r.usuarios))
       .catch((err) => setError(err.message))
       .finally(() => setCargando(false))
-  }, [token])
+  }
+
+  useEffect(cargar, [token])
+
+  const alternar = (u) => {
+    adminService
+      .setUsuarioEstado(u.id, u.estado === 'activo' ? 'inactivo' : 'activo', token)
+      .then(() => {
+        setError(null)
+        cargar()
+      })
+      .catch((err) => setError(err.message))
+  }
 
   return (
     <div>
@@ -29,6 +43,7 @@ function UsuariosAdmin({ token }) {
                 <th>Teléfono</th>
                 <th>Rol</th>
                 <th>Estado</th>
+                <th className="text-end">Acciones</th>
               </tr>
             </thead>
             <tbody>
@@ -46,6 +61,15 @@ function UsuariosAdmin({ token }) {
                     <span className={`badge ${u.estado === 'activo' ? 'bg-success' : 'bg-secondary'}`}>
                       {u.estado}
                     </span>
+                  </td>
+                  <td className="text-end">
+                    {sesion?.id === u.id ? (
+                      <span className="text-muted small">Eres tú</span>
+                    ) : (
+                      <button className="btn btn-sm btn-outline-secondary" onClick={() => alternar(u)}>
+                        {u.estado === 'activo' ? 'Desactivar' : 'Activar'}
+                      </button>
+                    )}
                   </td>
                 </tr>
               ))}

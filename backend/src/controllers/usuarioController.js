@@ -8,3 +8,12 @@ export async function list(req, res, next) {
     next(err);
   }
 }
+
+export async function setEstado(req, res, next) {
+  try {
+    const usuario = await usuarioService.setEstado(req.params.id, req.body.estado, req.user.id);
+    res.json({ usuario });
+  } catch (err) {
+    next(err);
+  }
+}

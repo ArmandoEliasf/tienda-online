@@ -41,3 +41,11 @@ export async function list() {
   );
   return rows;
 }
+
+export async function setEstado(id, estado) {
+  const { rows } = await query(
+    `UPDATE usuarios SET estado = $1 WHERE id = $2 RETURNING id, nombre, email, telefono, estado, fecha_registro, (SELECT nombre FROM roles WHERE id = id_rol) AS rol`,
+    [estado, id],
+  );
+  return rows[0] || null;
+}
