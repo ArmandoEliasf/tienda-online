@@ -26,3 +26,12 @@ export async function remove(req, res, next) {
     next(err);
   }
 }
+
+export async function consultarCodigoPostal(req, res, next) {
+  try {
+    const datos = await direccionService.consultarCodigoPostal(req.params.cp);
+    res.json(datos);
+  } catch (err) {
+    next(err);
+  }
+}

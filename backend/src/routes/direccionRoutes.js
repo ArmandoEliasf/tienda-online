@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { list, create, remove } from '../controllers/direccionController.js';
+import { list, create, remove, consultarCodigoPostal } from '../controllers/direccionController.js';
 import { requireAuth } from '../middleware/auth.js';
 import { validar, reglas } from '../middleware/validate.js';
 
@@ -8,6 +8,8 @@ const router = Router();
 router.use(requireAuth);
 
 router.get('/', list);
+
+router.get('/codigo-postal/:cp', consultarCodigoPostal);
 
 router.post(
   '/',

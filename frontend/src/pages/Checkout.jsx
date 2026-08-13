@@ -29,6 +29,9 @@ function Checkout() {
   const [cargando, setCargando] = useState(true)
   const [enviando, setEnviando] = useState(false)
   const [error, setError] = useState(null)
+  const [buscandoCp, setBuscandoCp] = useState(false)
+  const [cpError, setCpError] = useState(null)
+  const [colonias, setColonias] = useState([])
 
   useEffect(() => {
     if (!token) {
@@ -75,7 +78,43 @@ function Checkout() {
   const envio = subtotal >= 1000 ? 0 : 150
   const total = subtotal + envio
 
-  const cambiar = (e) => setForm({ ...form, [e.target.name]: e.target.value })
+  const cambiar = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value })
+    if (e.target.name === 'codigo_postal') {
+      setCpError(null)
+      setColonias([])
+    }
+  }
+
+  const buscarCodigoPostal = async () => {
+    const cp = form.codigo_postal.trim()
+    setCpError(null)
+    setColonias([])
+    if (cp.length !== 5) {
+      setCpError('El código postal debe tener 5 dígitos')
+      return
+    }
+    setBuscandoCp(true)
+    try {
+      const info = await direccionService.consultarCodigoPostal(cp, token)
+      setForm((prev) => ({
+        ...prev,
+        municipio: info.municipio,
+        colonia: info.colonias.length === 1 ? info.colonias[0].nombre : prev.colonia,
+      }))
+      if (info.colonias.length > 1) setColonias(info.colonias)
+      const estado = ESTADOS_MEXICO.find((e) => e.toLowerCase() === info.estado.toLowerCase())
+      if (estado) {
+        setForm((prev) => ({ ...prev, estado }))
+      } else {
+        setCpError(`"${info.estado}" no está en el catálogo, selecciona el estado manualmente`)
+      }
+    } catch (err) {
+      setCpError(err.message)
+    } finally {
+      setBuscandoCp(false)
+    }
+  }
 
   const guardarDireccion = async (e) => {
     e.preventDefault()
@@ -86,6 +125,8 @@ function Checkout() {
       setIdSeleccionada(direccion.id)
       setNueva(false)
       setForm({ nombre: '', calle: '', numero: '', colonia: '', codigo_postal: '', municipio: '', estado: '' })
+      setCpError(null)
+      setColonias([])
     } catch (err) {
       setError(err.message)
     }
@@ -186,13 +227,30 @@ function Checkout() {
                     </div>
                     <div className="col-md-9">
                       <label className="form-label small">Colonia</label>
-                      <input
-                        name="colonia"
-                        className="form-control form-control-sm"
-                        required
-                        value={form.colonia}
-                        onChange={cambiar}
-                      />
+                      {colonias.length > 1 ? (
+                        <select
+                          name="colonia"
+                          className="form-select form-select-sm"
+                          required
+                          value={form.colonia}
+                          onChange={cambiar}
+                        >
+                          <option value="">Selecciona...</option>
+                          {colonias.map((c) => (
+                            <option key={c.nombre} value={c.nombre}>
+                              {c.nombre}
+                            </option>
+                          ))}
+                        </select>
+                      ) : (
+                        <input
+                          name="colonia"
+                          className="form-control form-control-sm"
+                          required
+                          value={form.colonia}
+                          onChange={cambiar}
+                        />
+                      )}
                     </div>
                     <div className="col-md-4">
                       <label className="form-label small">C.P.</label>
@@ -201,9 +259,17 @@ function Checkout() {
                         className="form-control form-control-sm"
                         required
                         maxLength="5"
+                        inputMode="numeric"
                         value={form.codigo_postal}
                         onChange={cambiar}
+                        onBlur={buscarCodigoPostal}
+                        disabled={buscandoCp}
                       />
+                      {buscandoCp ? (
+                        <div className="form-text small">Consultando código postal...</div>
+                      ) : (
+                        cpError && <div className="text-danger small">{cpError}</div>
+                      )}
                     </div>
                     <div className="col-md-8">
                       <label className="form-label small">Municipio / Alcaldía</label>

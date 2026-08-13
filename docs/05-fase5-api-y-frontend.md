@@ -56,6 +56,7 @@ Reglas de validación disponibles: `requerido`, `email`, `telefonoMx` (10 dígit
 | Categorías | `POST / PUT / PATCH :estado` | admin | CRUD de categorías. |
 | Carrito | `GET/POST/PATCH/DELETE /api/carrito*` | Autenticado | Ver, agregar, actualizar, eliminar, vaciar. |
 | Direcciones | `GET/POST/DELETE /api/direcciones*` | Autenticado | Direcciones del usuario. |
+| Direcciones | `GET /api/direcciones/codigo-postal/:cp` | Autenticado | Consulta el CP en la API de **Postalia** y devuelve estado, municipio y colonias. |
 | Pedidos | `POST /api/pedidos` | Autenticado | Convierte el carrito en pedido (descuenta stock). |
 | Pedidos | `GET /api/pedidos/mios` y `/api/pedidos/:id` | Autenticado | Pedidos del propio usuario. |
 | Pedidos | `GET /api/pedidos/admin*` | admin | Listar (con filtro por estado) y ver detalle. |
@@ -84,6 +85,23 @@ El seed sincroniza la secuencia con `setval` para no colisionar con los pedidos 
 5. Descontar stock (`existencia = existencia - cantidad`).
 6. Marcar el carrito como `convertido`.
 7. `COMMIT` (o `ROLLBACK` en cualquier error).
+
+### Autocompletado de dirección por código postal (Postalia)
+
+En el formulario de dirección, al salir del campo C.P. (5 dígitos) se consulta
+`GET /direcciones/codigo-postal/:cp`, que **hace de proxy** hacia
+`https://postalia.com.mx/api/codigos-postales/:cp` con el token guardado en
+`POSTALIA_TOKEN` (`.env`, nunca en el frontend ni en git). El backend:
+
+- valida que el CP tenga 5 dígitos (400);
+- devuelve `{ codigo_postal, estado, municipio, ciudad, zona, colonias[] }` (200);
+- devuelve 404 con mensaje si no hay resultados;
+- usa `AbortSignal.timeout(5000)` para no colgar el pedido si Postalia no responde.
+
+El frontend autocompleta municipio, estado (validado contra `ESTADOS_MEXICO`) y
+colonia. Si el CP tiene varias colonias, muestra un `<select>` para elegir. Si la
+API falla, el usuario puede capturar la dirección manualmente (sigue valiendo la
+validación local de 5 dígitos al guardar).
 
 ### Un vendedor no puede comprar sus propios productos
 

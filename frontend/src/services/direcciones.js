@@ -13,3 +13,7 @@ export async function crearDireccion(datos, token) {
 export async function eliminarDireccion(id, token) {
   return api.delete(`/direcciones/${id}`, token)
 }
+
+export async function consultarCodigoPostal(cp, token) {
+  return api.get(`/direcciones/codigo-postal/${cp}`, token)
+}
