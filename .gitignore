@@ -11,3 +11,6 @@ backend/.env
 # Logs
 backend/server.out.log
 backend/server.err.log
+
+# Google Drive tokens (refresh token - NEVER commit)
+backend/drive-token.json

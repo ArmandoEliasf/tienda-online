@@ -7,6 +7,7 @@ import carritoRoutes from './carritoRoutes.js';
 import direccionRoutes from './direccionRoutes.js';
 import pedidoRoutes from './pedidoRoutes.js';
 import usuarioRoutes from './usuarioRoutes.js';
+import archivoRoutes from './archivoRoutes.js';
 
 const router = Router();
 
@@ -26,5 +27,6 @@ router.use('/carrito', carritoRoutes);
 router.use('/direcciones', direccionRoutes);
 router.use('/pedidos', pedidoRoutes);
 router.use('/usuarios', usuarioRoutes);
+router.use('/archivos', archivoRoutes);
 
 export default router;
