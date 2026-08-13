@@ -73,7 +73,7 @@ function ProductoDetalle() {
               <ProductImage
                 src={producto.imagen_url}
                 alt={producto.nombre}
-                className="card-img-top rounded-3"
+                className="card-img-top rounded-3 producto-detalle-imagen"
               />
             </div>
           </div>

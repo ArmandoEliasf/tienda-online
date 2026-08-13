@@ -12,3 +12,14 @@ export async function upload(req, res, next) {
     next(err);
   }
 }
+
+export async function descargar(req, res, next) {
+  try {
+    const { buffer, contentType } = await googleDriveService.descargarArchivo(req.params.id);
+    res.set('Content-Type', contentType);
+    res.set('Cache-Control', 'public, max-age=31536000, immutable');
+    res.send(buffer);
+  } catch (err) {
+    next(err);
+  }
+}

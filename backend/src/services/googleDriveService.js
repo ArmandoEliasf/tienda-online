@@ -138,4 +138,16 @@ export async function uploadArchivo(buffer, nombreArchivo, mimeType) {
   };
 }
 
+export async function descargarArchivo(id) {
+  const accessToken = await obtenerAccessToken();
+  const res = await fetch(`${API_BASE}/drive/v3/files/${id}?alt=media`, {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+  if (!res.ok) {
+    throw new ApiError(404, 'Imagen no encontrada en Google Drive');
+  }
+  const buffer = Buffer.from(await res.arrayBuffer());
+  return { buffer, contentType: res.headers.get('content-type') || 'image/png' };
+}
+
 export { SCOPE };
