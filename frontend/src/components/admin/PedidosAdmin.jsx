@@ -48,11 +48,11 @@ function PedidosAdmin({ token }) {
       .catch((err) => setError(err.message))
   }
 
-  const avanzar = (pedido) => {
+  const avanzar = (pedido, observacion = '') => {
     if (pedido.estado === 'cancelado' || pedido.estado === 'entregado') return
     const siguiente = SIGUIENTE[pedido.estado]
     if (!siguiente) return
-    cambiarEstado(pedido.id, siguiente, 'Actualización automática del administrador')
+    cambiarEstado(pedido.id, siguiente, observacion || 'Actualización automática del administrador')
   }
 
   return (
@@ -79,7 +79,7 @@ function PedidosAdmin({ token }) {
           pedido={detalle}
           onAtras={() => setDetalle(null)}
           onCambiarEstado={(estado, obs) => cambiarEstado(detalle.id, estado, obs)}
-          onAvanzar={() => avanzar(detalle)}
+          onAvanzar={(obs) => avanzar(detalle, obs)}
         />
       ) : cargando ? (
         <p className="text-muted">Cargando pedidos...</p>
@@ -222,7 +222,7 @@ function DetallePedido({ pedido, onAtras, onCambiarEstado, onAvanzar }) {
               />
             </div>
             <div className="col-md-4">
-              <button className="btn btn-sm btn-success w-100" onClick={onAvanzar}>
+              <button className="btn btn-sm btn-success w-100" onClick={() => onAvanzar(observacion)}>
                 Avanzar estado
               </button>
             </div>
